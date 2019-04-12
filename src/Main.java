@@ -38,48 +38,41 @@ public class Main {
                     + "Possible Commands: go <room name>, look, add room <room name>, take <item name>, drop <item name>, quit");
             response = s.nextLine();
 
-            String[] words = response.split(" ");
-            String firstWord = words[0];
-
-            if (firstWord.equals("go") && level.containsRoom(words[1])) {
-                player.move(level.getRoom(words[1]));
-                for (Creature creature : creatures) {
-                    creature.move();
-                }
-            } else if (firstWord.equals("look")) {
-                System.out.println("Items in room: " + player.getCurrentRoom().getItemNames());
-                System.out.println("Neighbors: " + player.getCurrentRoom().getNeighborNames());
-            } else if (firstWord.equals("add")) {
-                if (words[1].equals("room")) {
-                    String roomName = words[2];
-                    if (level.containsRoom(words[2])) {
-                        level.addDirectedEdge(player.getCurrentRoom().getName(), words[2]);
-                    } else {
-                        level.addRoom(words[2], "");
-                        level.addDirectedEdge(player.getCurrentRoom().getName(), words[2]);
-                    }
-                }
-            } else if (firstWord.equals("quit")) {
-                break;
-            } else if (firstWord.equals("take")) {
-                if (player.getCurrentRoom().containsItem(words[1])) {
-                    Item item = player.getCurrentRoom().removeItem(words[1]);
-                    player.addItem(item);
-                    System.out.println(player.getName() + " has obtained " + words[1] + "!");
-                } else {
-                    System.out.println("item " + words[1] + " is not in the current room");
-                }
-            } else if (firstWord.equals("drop")) {
-                if (player.containsItem(words[1])) {
-                    Item item = player.removeItem(words[1]);
-                    player.getCurrentRoom().addItem(item);
-                    System.out.println(words[1] + " is now in " + player.getCurrentRoom().getName().toUpperCase());
-                } else {
-                    System.out.println("item " + words[1] + " is not in the player's possession");
-                }
-            }
+            Command command = parseCommand(response, level);
+            command.execute();
             System.out.println();
         } while (!response.equals("quit"));
+    }
+
+    public static Command parseCommand(String response, Level level) {
+        String commandWord = getFirstWordIn(response);
+
+        if (commandWord.equals("go")) {
+            String roomName = getLastWord(response);
+            return new GoCommand(roomName, level);
+        } else if (commandWord.equals("look")) {
+            return new LookCommand(level);
+        } else if (commandWord.equals("take")) {
+            String itemName = getLastWord(response);
+            return new TakeCommand(itemName, level);
+        } else if (commandWord.equals("add")) {
+            return new AddCommand(response, level);
+        } else if (commandWord.equals("drop")) {
+            String itemName = getLastWord(response);
+            return new DropCommand(itemName, level);
+        }
+
+        return new EmptyCommand();
+    }
+
+    public static String getLastWord(String response) {
+        String[] words = response.split(" ");
+        return words[words.length - 1];
+    }
+
+    public static String getFirstWordIn(String response) {
+        String[] words = response.split(" ");
+        return words[0];
     }
 
     public static void printGameDetails(Level level, Wumpus wumpus, PopStar popStar) {

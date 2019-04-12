@@ -10,9 +10,11 @@ public class Level {
     private ArrayList<Chicken> chickens;
     private Wumpus wumpus;
     private PopStar popStar;
+    private Player player;
 
     public Level(Player player) {
         rooms = new HashMap<>();
+        this.player = player;
         creatures = new ArrayList<>();
         chickens = new ArrayList<>();
         wumpus = new Wumpus(getRoom("bedroom"), this, player);
@@ -22,6 +24,10 @@ public class Level {
         }
         creatures.add(wumpus);
         creatures.add(popStar);
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     public ArrayList<Creature> getCreatures() {
@@ -172,10 +178,20 @@ class Room {
     public int getChickenCount() {
         return chickens.size();
     }
-    public boolean isNeighborsWith(Room room) {
-        if (neighbors.contains(room)) {
-            return true;
+    public boolean isNeighborsWith(String roomName) {
+        for (Room room : neighbors) {
+            if (room.getName().equals(roomName)) {
+                return true;
+            }
         }
         return false;
+    }
+    public Room getNeighborRoom(String roomName) {
+        for (Room room : neighbors) {
+            if (room.getName().equals(roomName)) {
+                return room;
+            }
+        }
+        return null;
     }
 }
