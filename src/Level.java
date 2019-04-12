@@ -16,13 +16,26 @@ public class Level {
         rooms = new HashMap<>();
         this.player = player;
         creatures = new ArrayList<>();
+    }
+
+    public void createChickens(int n) {
         chickens = new ArrayList<>();
-        wumpus = new Wumpus(getRoom("bedroom"), this, player);
-        popStar = new PopStar(getRoom("play-room"), this, player);
-        for (Chicken chicken : chickens) {
-            creatures.add(chicken);
+        for (int i = 0; i < n; i++) {
+            Room room = getRandomRoom();
+            Chicken temp = new Chicken(room, this, player);
+            chickens.add(temp);
+            creatures.add(temp);
+            getRoom(room.getName()).addChicken(temp);
         }
+    }
+
+    public void createWumpus (Room room) {
+        wumpus = new Wumpus(room, this, player);
         creatures.add(wumpus);
+    }
+
+    public void createPopStar(Room room) {
+        popStar = new PopStar(room, this, player);
         creatures.add(popStar);
     }
 

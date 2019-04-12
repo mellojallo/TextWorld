@@ -6,19 +6,11 @@ public class Main {
         Level level = new Level(player);
         setUpGame(level);
         player.setCurrentRoom(level.getRoom("hall"));
-        level.setPopStarRoom(level.getRoom("play-room"));
-        level.setWumpusRoom(level.getRoom("bedroom"));
+        level.createWumpus(level.getRoom("bedroom"));
+        level.createPopStar(level.getRoom("play-room"));
+        level.createChickens(100);
         addItemsIntoRooms(level);
-        createAndAssignChickens(level.getChickens(), level, player);
         runGame(player, level, level.getWumpus(), level.getChickens(), level.getPopStar(), level.getCreatures());
-    }
-    public static void createAndAssignChickens(ArrayList<Chicken> chickens, Level level, Player player) {
-        for (int i = 0; i < 1; i++) {
-            Room room = level.getRandomRoom();
-            Chicken temp = new Chicken(room, level, player);
-            chickens.add(temp);
-            level.getRoom(room.getName()).addChicken(temp);
-        }
     }
 
 

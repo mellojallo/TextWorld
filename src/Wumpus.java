@@ -5,15 +5,12 @@ public class Wumpus extends Creature {
     }
 
     public void move(){
-        boolean again;
-        Room room;
-        do {
-            again = true;
-            room = level.getRandomNeighboringRoom(currentRoom);
-            if (!room.equals(player.getCurrentRoom())) {
-                again = false;
+        for (Room room : currentRoom.getNeighbors()) {
+            if (!room.equals(player.getCurrentRoom()) && !player.getCurrentRoom().getNeighbors().contains(room)) {
+                currentRoom = room;
+                return;
             }
-        } while (again);
-        currentRoom = room;
+        }
+        currentRoom = level.getRandomNeighboringRoom(currentRoom);
     }
 }
