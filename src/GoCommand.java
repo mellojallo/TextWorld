@@ -13,5 +13,8 @@ public class GoCommand extends Command{
                 creature.move();
             }
         }
+        else {
+            System.out.println("Sorry, you can't go to that room");
+        }
     }
 }
